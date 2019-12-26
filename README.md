@@ -1,5 +1,6 @@
-# amandy_mytask
-Test task
+# Test Task
+
+## Info
 
 Папка **tasks_data** содержит ресурсы для некоторых заданий.</br>
 **five_task.txt** содержит запросы для пятого задания.
