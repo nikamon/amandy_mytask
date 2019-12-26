@@ -1,0 +1,32 @@
+1.
+
+SELECT 2 as id, (
+                  (
+                    SELECT SUM(`transactions`.`amount`) as to_sum FROM `transactions` WHERE `transactions`.`to_person_id` = id
+                  )-(
+                    SELECT SUM(`transactions`.`amount`) as from_sum FROM `transactions` WHERE `transactions`.`from_person_id` = id
+                    ) + 100
+                ) as balance;
+
+2.
+
+  (
+  SELECT `name` as City, COUNT(`name`) as count_of_requests FROM `cities`, `persons`, `transactions` WHERE `persons`.`id` = `transactions`.`from_person_id` AND `cities`.`id` = `persons`.`city_id`
+    GROUP BY `name`
+    ORDER BY COUNT(`name`) DESC
+    LIMIT 1
+  )
+  UNION
+  (
+  SELECT `name`, COUNT(`name`) FROM `cities`, `persons`, `transactions` WHERE `persons`.`id` = `transactions`.`to_person_id` AND `cities`.`id` = `persons`.`city_id`
+    GROUP BY `name`
+    ORDER BY COUNT(`name`) DESC LIMIT 1
+  )
+
+3.
+
+SELECT table_1.`transaction_id` as Transaction, table_1.`city_id` as City
+  FROM
+    (SELECT `transactions`.`transaction_id`,`persons`.`city_id` FROM `persons`, `transactions`, `cities` WHERE `persons`.`id` = `transactions`.`from_person_id` AND `cities`.`id` = `persons`.`city_id`) as table_1,
+    (SELECT `transaction_id`, `persons`.`city_id` FROM `persons`, `transactions`, `cities` WHERE `persons`.`id` = `transactions`.`to_person_id` AND `cities`.`id` = `persons`.`city_id`) as table_2
+  WHERE table_1.`city_id` = table_2.`city_id` AND table_1.`transaction_id` = table_2.`transaction_id`
